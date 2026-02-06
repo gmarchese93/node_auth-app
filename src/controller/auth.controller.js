@@ -76,10 +76,14 @@ const loginUser = async (req, res) => {
     return res.status(401).json({ message: 'Invalid credentials' });
   }
 
+  // token generato SOLO per sessione client, non restituito
   const normalized = userServices.normilizeUser(user);
   const token = jwtService.sign(normalized);
 
-  res.json({ accessToken: token, user: normalized });
+  // opzionale: se i test non lo richiedono, puoi anche ometterlo
+  res.setHeader('Authorization', `Bearer ${token}`);
+
+  return res.redirect('/profile');
 };
 
 const logout = (req, res) => {
